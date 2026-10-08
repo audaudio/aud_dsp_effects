@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Add the tremolo node through the C ABI
+
 ## 0.0.2 - 2026-10-08
 
 ### Added
