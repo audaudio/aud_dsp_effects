@@ -1,0 +1,19 @@
+// @license
+// Copyright (c) Audanika. All Rights Reserved.
+//
+// Use of this source code is governed by terms that can be
+// found in the LICENSE file in the root of this package.
+
+{
+  "name": "aud_dsp_effects",
+  "summary": "Effects of the Audanika Audio Engine: reverbs, delays, oscillators, filters, dynamics, modulation, distortion.",
+  "domain": [
+    "Effects of the Audanika Audio Engine"
+  ],
+  "interfaces": {
+    "uses": {
+      "aud_audio_core": "package dependency"
+    },
+    "usedBy": {}
+  }
+}
