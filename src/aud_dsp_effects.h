@@ -1,30 +1,34 @@
+// @license
+// Copyright (c) Audanika. All Rights Reserved.
+//
+// Use of this source code is governed by terms that can be
+// found in the LICENSE file in the root of this package.
+
+// The entry point of aud_dsp_effects (ticket 5, S0-mobile): registers the
+// package's node types with an engine through the C ABI of aud_audio_core.
+// The spike ships one node, a tremolo; ticket S10a adds reverb and delay.
+
+#ifndef AUD_DSP_EFFECTS_H
+#define AUD_DSP_EFFECTS_H
+
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
 
-#if _WIN32
-#include <windows.h>
-#else
-#include <pthread.h>
-#include <unistd.h>
+#include "aud_abi.h"
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#if _WIN32
-#define FFI_PLUGIN_EXPORT __declspec(dllexport)
-#else
-#define FFI_PLUGIN_EXPORT
+// The type id of the tremolo node: a gain modulated by a sine LFO with the
+// parameters rate (Hz) and depth (0..1).
+#define AUD_DSP_EFFECTS_TREMOLO_TYPE_ID "aud.effects.tremolo"
+
+// [control] Registers the node types with the host api of an engine
+// (`const AudHostApi*`); AUD_OK or the first error code.
+AUD_EXPORT int32_t aud_dsp_effects_register(const void* host_api);
+
+#ifdef __cplusplus
+}
 #endif
 
-// A very short-lived native function.
-//
-// For very short-lived functions, it is fine to call them on the main isolate.
-// They will block the Dart execution while running the native function, so
-// only do this for native functions which are guaranteed to be short-lived.
-FFI_PLUGIN_EXPORT intptr_t sum(intptr_t a, intptr_t b);
-
-// A longer lived native function, which occupies the thread calling it.
-//
-// Do not call these kind of native functions in the main isolate. They will
-// block Dart execution. This will cause dropped frames in Flutter applications.
-// Instead, call these native functions on a separate isolate.
-FFI_PLUGIN_EXPORT intptr_t sum_long_running(intptr_t a, intptr_t b);
+#endif  // AUD_DSP_EFFECTS_H
