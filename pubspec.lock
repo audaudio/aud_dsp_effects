@@ -37,19 +37,27 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      resolved-ref: "47e125c46f7c786a55bf00ddfd75c073ee56c70a"
+      resolved-ref: "956780dfe4a864883ee06a944a8b3063b261a6f8"
       tag-pattern: "{{version}}"
       url: "git@github.com:audaudio/aud_audio_core.git"
     source: git
-    version: "0.1.0"
+    version: "0.5.1"
+  aud_audio_graph:
+    dependency: "direct dev"
+    description:
+      path: "."
+      resolved-ref: "28c43930245f81bb62431e839f85fc1446402a2f"
+      tag-pattern: "{{version}}"
+      url: "git@github.com:audaudio/aud_audio_graph.git"
+    source: git
+    version: "0.5.1"
   aud_midi_standard:
     dependency: transitive
     description:
-      path: "."
-      resolved-ref: b45c6aa1cd74b7074be43ba0ff34fb939eec417d
-      tag-pattern: "{{version}}"
-      url: "https://github.com/audmidi/aud_midi_standard.git"
-    source: git
+      name: aud_midi_standard
+      sha256: "6ce86e854c3e2f510b6e48de194e4a1b020f2c4568e5fa52e464771847b6043e"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0"
   boolean_selector:
     dependency: transitive
@@ -372,7 +380,7 @@ packages:
     source: hosted
     version: "0.12.20"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       sha256: "307249ce4ff29d58a18e97f6345f539382eb9c9c29ecda628900f31de0443dd9"
@@ -476,7 +484,7 @@ packages:
     source: hosted
     version: "4.1.0"
   record_use:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: record_use
       sha256: "1cb8564af8d43b464294411db9217f5ec04891c6f22ee2c32d73ae05e88a6bd2"

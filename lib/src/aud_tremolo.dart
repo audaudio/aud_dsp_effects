@@ -4,47 +4,48 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import 'dart:ffi';
-
 import 'package:aud_audio_core/aud_audio_core.dart';
 
-import 'aud_dsp_effects_bindings_generated.dart' as bindings;
-
 // #############################################################################
-/// The tremolo node of the package: a gain modulated by a sine LFO.
+/// The node `aud.effects.tremolo`: a gain modulated by a sine LFO, 1 at the
+/// peak of the LFO and `1 - depth` at its trough. A mono input feeds both
+/// sides; the output is stereo.
 abstract final class AudTremolo {
-  /// The type id to create the node with.
-  static const String typeId = bindings.AUD_DSP_EFFECTS_TREMOLO_TYPE_ID;
+  /// The type id of the node.
+  static const String typeId = 'aud.effects.tremolo';
 
-  /// The index of the rate parameter in Hz.
-  static const int rate = 0;
+  /// The version of the node type.
+  static const int version = 1;
 
-  /// The index of the depth parameter, 0 to 1.
-  static const int depth = 1;
-}
+  // ...........................................................................
+  // Parameters
 
-// #############################################################################
-/// Thrown when the package cannot register its node types.
-class AudDspEffectsException implements Exception {
-  /// Creates the exception for a result [code].
-  const AudDspEffectsException({required this.code});
+  /// The rate of the LFO in Hz, 0.1 to 20; default 5.
+  static const String rate = 'rate';
 
-  /// The result code, one of the `AUD_ERROR_*` constants.
-  final int code;
+  /// The depth of the modulation, 0 to 1; default 0.5.
+  static const String depth = 'depth';
 
-  @override
-  String toString() =>
-      'AudDspEffectsException: registration failed with '
-      '${AudAbi.resultName(code)}';
-}
+  /// The parameter ids in the order of their indices.
+  static const List<String> params = [rate, depth];
 
-// #############################################################################
-/// The registration of the package's node types with an engine.
-abstract final class AudDspEffects {
-  /// Registers the node types with the host api of an engine, e.g.
-  /// `AudEngine.hostApi`; throws when the engine refuses them.
-  static void register(Pointer<Void> hostApi) {
-    final result = bindings.aud_dsp_effects_register(hostApi);
-    if (result != AUD_OK) throw AudDspEffectsException(code: result);
-  }
+  /// The parameters as the node declares them, in the order of their
+  /// indices: ranges, defaults and flags.
+  static const List<AudParamDescriptor> paramDescriptors = [
+    AudParamDescriptor(
+      id: rate,
+      name: 'Rate',
+      unit: 'Hz',
+      min: 0.1,
+      max: 20,
+      defaultValue: 5,
+      ramped: true,
+    ),
+    AudParamDescriptor(
+      id: depth,
+      name: 'Depth',
+      defaultValue: 0.5,
+      ramped: true,
+    ),
+  ];
 }

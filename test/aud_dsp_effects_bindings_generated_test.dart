@@ -9,6 +9,7 @@ import 'dart:ffi';
 import 'package:aud_audio_core/aud_audio_core.dart';
 import 'package:aud_dsp_effects/src/aud_dsp_effects_bindings_generated.dart'
     as bindings;
+import 'package:ffi/ffi.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -16,6 +17,16 @@ void main() {
     test('aud_dsp_effects_register refuses a null host', () {
       expect(
         bindings.aud_dsp_effects_register(nullptr),
+        AUD_ERROR_INVALID_ARGUMENT,
+      );
+    });
+
+    test('aud_dsp_effects_bench_run refuses a null request', () {
+      final result = calloc<bindings.AudEffectsBenchResult>();
+      addTearDown(() => calloc.free(result));
+      result.ref.struct_size = sizeOf<bindings.AudEffectsBenchResult>();
+      expect(
+        bindings.aud_dsp_effects_bench_run(nullptr, result),
         AUD_ERROR_INVALID_ARGUMENT,
       );
     });
