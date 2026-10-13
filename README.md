@@ -184,7 +184,7 @@ denormals.
 | `aud.effects.freeverb` | `room_size` (0..1, 0.5), `damping` (0..1, 0.5), `width` (0..1, 1), `mix` (0..1, 0.25) | 0; until the longest comb decays by 60 dB, at most 30 s | Freeverb by Jezar at Dreampoint, public domain; tunings scaled from 44.1 kHz |
 | `aud.effects.plate` | `pre_delay` (s, 0..0.25, 0.02), `bandwidth` (0..1, 0.9995), `decay` (0..0.99, 0.5), `damping` (0..1, 0.0005), `mix` (0..1, 0.25) | 0; until the tank decays by 60 dB, at most 30 s | Own code from J. Dattorro, "Effect Design, Part 1", JAES 45(9), 1997; delays scaled from 29761 Hz |
 | `aud.effects.stereo_delay` | `time` (s, 0.001..2, 0.4), `feedback` (0..1, 0.3), `mix` (0..1, 0.25), `ping_pong` (0/1, 0) | 0; until the echoes decay by 60 dB, endless from feedback 0.999 | DunneAudioKit's StereoDelay, MIT, Copyright (c) 2021 AudioKit; mix no longer inverted |
-| `aud.effects.tempo_delay` | `division` (0..15, 8 = 1/8D), `feedback` (0..1, 0.3), `mix` (0..1, 0.25), `ping_pong` (0/1, 0) | 0; as the stereo delay | The stereo delay's lines; time = beats(division) · 60 / tempo of the transport (120 BPM without one), up to 4 s |
+| `aud.effects.tempo_delay` | `division` (0..15, 8 = 1/8D), `feedback` (0..1, 0.3), `mix` (0..1, 0.25), `ping_pong` (0/1, 0) | 0; as the stereo delay | The stereo delay's lines; time = beats(division) · 60 / tempo of the transport (120 BPM without one), up to 4 s; longer divisions play 4 s and leave the beat |
 | `aud.effects.limiter` | `ceiling` (dBFS, -24..0, -1), `release` (s, 0.001..2, 0.1), `gain` (dB, -24..24, 0) | 1.5 ms (72 frames at 48 kHz) for both | Own code after Giannoulis, Massberg, Reiss, JAES 60(6), 2012, and Zoelzer, DAFX ch. 4 |
 | `aud.effects.tremolo` | `rate` (Hz, 0.1..20, 5), `depth` (0..1, 0.5) | 0; 0 | Own code |
 

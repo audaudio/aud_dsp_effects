@@ -20,6 +20,8 @@
 - integration_test/effects_test.dart: the render time of every node, the chain on the engine, the output peak and the look-ahead
 - The example depends on aud_audio for the engine
 - Describe the example in the READMEs
+- Add the limit of the tempo delay to its documentation
+- Divisions longer than 4 s, e.g. 1/1 below 60 BPM, play 4 s and leave the beat
 
 ## 0.1.0 - 2026-10-08
 

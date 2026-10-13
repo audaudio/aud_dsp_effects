@@ -103,6 +103,9 @@ abstract final class AudTempoDelay {
     4,
   ];
 
-  /// The longest delay in seconds: a whole note at 60 BPM.
+  /// The longest delay in seconds: a whole note at 60 BPM. A longer
+  /// division - e.g. 1/1 below 60 BPM, 1/2D below 45 BPM - plays this time
+  /// instead and leaves the beat; [divisionBeats] gives the beats to check
+  /// a division against the tempo.
   static const double maxSeconds = 4;
 }
