@@ -142,6 +142,36 @@ void main() {
 }
 ```
 
+### Die Beispiel-App
+
+`example/` spielt einen dichten Akkord - acht Sägezähne über drei
+Oktaven - durch das Stereo-Delay, die Platte oder Freeverb und den
+Limiter auf der Engine von `aud_audio`, auf iOS und Android: ein Regler
+je Parameter, ein Drive in den Limiter bis +24 dB, die Renderzeit, die
+Xruns, die Ausgangsspitze und die Latenz des Limiters, und ein Bericht zum
+Kopieren.
+
+```bash
+cd example
+flutter run -d <device>
+flutter test integration_test/effects_test.dart -d <device> \
+  --dart-define=AUD_MEASURE_SECONDS=10
+# Dasselbe auf einem iPhone über WLAN
+flutter drive --driver=test_driver/integration_test.dart \
+  --target=integration_test/effects_test.dart -d <device> --publish-port \
+  --dart-define=AUD_MEASURE_SECONDS=10
+```
+
+Der Integrationstest gibt zwei Zeilen JSON aus. `EFFECTS_BENCH` enthält
+die Bench jedes Nodes bei der Abtastrate und dem Block des Geräts und bei
+48 kHz, 256 Frames. `EFFECTS_CHAIN` enthält den Akkord, live gespielt für
+`AUD_MEASURE_SECONDS` (Vorgabe 10), erst direkt zum Ausgang, dann durch
+Delay, Platte und Limiter, 12 dB über Vollaussteuerung gefahren:
+Callbacks, Xruns, verspätete Callbacks, die Renderzeit mit und ohne die
+Effekte und die Ausgangsspitze, die an der Obergrenze bleibt; dazu die
+Latenz des Limiters, die ein offline auf dem Gerät gerechneter Impuls
+bestätigt.
+
 ## Funktionsweise
 
 Jeder Node rechnet seinen Eingang an Ort und Stelle, nimmt jeden Block bis

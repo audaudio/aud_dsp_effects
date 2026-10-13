@@ -15,6 +15,11 @@
 - Add AudEffectsBench in testing.dart: render time per node and block
 - Add the notices of the vendored sources and scripts/check-notices.js
 - Add golden renders, native tests under ASan, UBSan, RTSan and TSan
+- Add an example that plays a chord through the effects and measures them
+- A page with a saw chord through delay, plate or Freeverb and limiter, a slider per parameter, a drive and the numbers
+- integration_test/effects_test.dart: the render time of every node, the chain on the engine, the output peak and the look-ahead
+- The example depends on aud_audio for the engine
+- Describe the example in the READMEs
 
 ## 0.1.0 - 2026-10-08
 

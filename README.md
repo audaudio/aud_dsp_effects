@@ -140,6 +140,34 @@ void main() {
 }
 ```
 
+### The example app
+
+`example/` plays a dense chord - eight saws across three octaves - through
+the stereo delay, the plate or Freeverb and the limiter on the engine of
+`aud_audio`, on iOS and Android: a slider for every parameter, a drive
+into the limiter up to +24 dB, the render time, the xruns, the output
+peak and the latency of the limiter, and a report to copy.
+
+```bash
+cd example
+flutter run -d <device>
+flutter test integration_test/effects_test.dart -d <device> \
+  --dart-define=AUD_MEASURE_SECONDS=10
+# The same on an iPhone over Wi-Fi
+flutter drive --driver=test_driver/integration_test.dart \
+  --target=integration_test/effects_test.dart -d <device> --publish-port \
+  --dart-define=AUD_MEASURE_SECONDS=10
+```
+
+The integration test prints two lines of JSON. `EFFECTS_BENCH` holds the
+bench of every node at the sample rate and the block of the device and at
+48 kHz, 256 frames. `EFFECTS_CHAIN` holds the chord played live for
+`AUD_MEASURE_SECONDS` (default 10), first straight to the output, then
+through delay, plate and limiter driven 12 dB over full scale: callbacks,
+xruns, late callbacks, the render time with and without the effects and
+the output peak, which stays at the ceiling; and the latency of the
+limiter, which an impulse rendered offline on the device confirms.
+
 ## How It Works
 
 Every node renders its input in place, takes any block up to the prepared
