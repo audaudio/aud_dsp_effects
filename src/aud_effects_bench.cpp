@@ -45,6 +45,21 @@ void benchFree(void*, void* memory) { std::free(memory); }
 
 void benchLog(void*, int32_t, const char*) {}
 
+// The host api that registers the node types with `registry`.
+AudHostApi benchHost(AudBenchRegistry& registry) {
+  AudHostApi host = {};
+  host.struct_size = sizeof(AudHostApi);
+  host.abi_major = AUD_ABI_VERSION_MAJOR;
+  host.abi_minor = AUD_ABI_VERSION_MINOR;
+  host.abi_oldest_minor = AUD_ABI_VERSION_MINOR;
+  host.host = &registry;
+  host.register_node_type = benchRegister;
+  host.alloc = benchAlloc;
+  host.free = benchFree;
+  host.log = benchLog;
+  return host;
+}
+
 // ############################################################################
 // The test signal
 
@@ -62,6 +77,20 @@ constexpr double kPeak = 0.5011872336272722;
 constexpr double kChord[] = {130.81, 164.81, 196.00, 246.94,
                              293.66, 369.99, 440.00};
 
+// The chord of channel `c` at `t` seconds, before it is scaled: each note
+// with its harmonics, the partials of each channel at phases of their own.
+double chordAt(double t, uint32_t c) {
+  constexpr double kTwoPi = 6.283185307179586;
+  double value = 0.0;
+  for (size_t n = 0; n < sizeof(kChord) / sizeof(kChord[0]); ++n) {
+    const double phase = 0.7 * static_cast<double>(n * (c + 1));
+    for (int h = 1; h <= 3; ++h) {
+      value += std::sin(kTwoPi * kChord[n] * h * t + phase * h) / h;
+    }
+  }
+  return value;
+}
+
 // One cycle of the test signal per channel: the chord at -6 dBFS, its
 // decay and silence; the right channel's partials start at other phases.
 std::vector<std::vector<float>> testSignal(double sampleRate,
@@ -69,19 +98,12 @@ std::vector<std::vector<float>> testSignal(double sampleRate,
   const size_t frames = static_cast<size_t>(kCycleSeconds * sampleRate);
   std::vector<std::vector<float>> signal(channels,
                                          std::vector<float>(frames, 0.0f));
-  constexpr double kTwoPi = 6.283185307179586;
   for (uint32_t c = 0; c < channels; ++c) {
     std::vector<double> raw(frames, 0.0);
     double largest = 0.0;
     for (size_t i = 0; i < frames; ++i) {
       const double t = static_cast<double>(i) / sampleRate;
-      double value = 0.0;
-      for (size_t n = 0; n < sizeof(kChord) / sizeof(kChord[0]); ++n) {
-        const double phase = 0.7 * static_cast<double>(n * (c + 1));
-        for (int h = 1; h <= 3; ++h) {
-          value += std::sin(kTwoPi * kChord[n] * h * t + phase * h) / h;
-        }
-      }
+      const double value = chordAt(t, c);
       double envelope = 0.0;
       if (t < kSustainSeconds) {
         envelope = 1.0;
@@ -138,6 +160,24 @@ int32_t paramIndexOf(const AudNodeDescriptor& type, const char* id) {
   return -1;
 }
 
+// The mean, the 99th percentile and the maximum of the `durations` of the
+// timed blocks of `request`.
+void summarize(const AudEffectsBenchRequest& request,
+               const std::vector<double>& durations,
+               AudEffectsBenchResult& result) {
+  double sum = 0.0;
+  for (double duration : durations) sum += duration;
+  std::vector<double> sorted = durations;
+  std::sort(sorted.begin(), sorted.end());
+  const size_t p99 = static_cast<size_t>(
+      std::ceil(0.99 * static_cast<double>(sorted.size())) - 1);
+  result.blocks = request.blocks;
+  result.block_ns = 1e9 * request.frames / request.sample_rate;
+  result.mean_ns = sum / static_cast<double>(durations.size());
+  result.p99_ns = sorted[p99];
+  result.max_ns = sorted.back();
+}
+
 // Renders and times the blocks of `request` with a prepared node.
 void measure(const AudEffectsBenchRequest& request,
              const AudNodeDescriptor& type, void* node, uint32_t inputs,
@@ -183,32 +223,13 @@ void measure(const AudEffectsBenchRequest& request,
     }
     position = (position + frames) % cycle;
   }
-  double sum = 0.0;
-  for (double duration : durations) sum += duration;
-  std::vector<double> sorted = durations;
-  std::sort(sorted.begin(), sorted.end());
-  const size_t p99 = static_cast<size_t>(
-      std::ceil(0.99 * static_cast<double>(sorted.size())) - 1);
-  result.blocks = request.blocks;
-  result.block_ns = 1e9 * frames / request.sample_rate;
-  result.mean_ns = sum / static_cast<double>(durations.size());
-  result.p99_ns = sorted[p99];
-  result.max_ns = sorted.back();
+  summarize(request, durations, result);
 }
 
 int32_t run(const AudEffectsBenchRequest& request,
             AudEffectsBenchResult& result) {
   AudBenchRegistry registry;
-  AudHostApi host = {};
-  host.struct_size = sizeof(AudHostApi);
-  host.abi_major = AUD_ABI_VERSION_MAJOR;
-  host.abi_minor = AUD_ABI_VERSION_MINOR;
-  host.abi_oldest_minor = AUD_ABI_VERSION_MINOR;
-  host.host = &registry;
-  host.register_node_type = benchRegister;
-  host.alloc = benchAlloc;
-  host.free = benchFree;
-  host.log = benchLog;
+  const AudHostApi host = benchHost(registry);
   const int32_t registered = aud_dsp_effects_register(&host);
   if (registered != AUD_OK) return registered;
   const AudNodeDescriptor* type = typeOf(registry, request.type_id);

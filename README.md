@@ -175,9 +175,9 @@ maximum and ramps its parameters through the engine's parameter events
 (`AudNodeBase` of `aud_audio_core`). Buffers are allocated in `prepare`;
 `process`, `reset` and `set_param` neither allocate nor lock. The reverbs
 and delays take a mono or a stereo input - a mono input feeds both sides -
-and render stereo; `mix` crossfades from dry (0) to wet (1). Feedback paths
-flush values below 1e-15 to zero, so long tails never slow down on
-denormals.
+and render stereo; `mix` crossfades linearly from dry (0) to wet (1).
+Feedback paths flush values below 1e-15 to zero, so long tails never slow
+down on denormals.
 
 | Node | Parameters (range, default) | Latency, tail | Source |
 | --- | --- | --- | --- |
@@ -199,8 +199,8 @@ stay below the ceiling - linked over all channels -, holds its minimum over
 the look-ahead of L frames, lets a release follower raise it no faster than
 the release, smooths it with a box filter of L + 1 frames and applies it to
 the signal delayed by L frames, so every peak meets the fully reduced gain;
-a final clamp to the ceiling guards the rounding. Samples that are no
-number count as silence.
+a final clamp to the ceiling guards the rounding. Samples that are not
+finite - no number or infinite, also after the gain - count as silence.
 
 The bench (`testing.dart`) registers the package with a host of its own,
 runs one node through its vtable and times each process call of a dense
@@ -208,6 +208,28 @@ chord at -6 dBFS that decays into silence every 4 seconds. On an Apple M5
 at 48 kHz, 256 frames per block, the mean per block is about 4 µs for
 Freeverb, 3.5 µs for the plate, 2 µs for each delay, 1 µs for the limiter
 and 0.6 µs for the tremolo - well below 0.1 % of the block.
+
+### The Dart API
+
+- `aud_dsp_effects.dart` is platform-neutral and compiles for the web: one
+  class per node - `AudFreeverb`, `AudPlateReverb`, `AudStereoDelay`,
+  `AudTempoDelay`, `AudLimiter`, `AudTremolo` - holds its `typeId`, its
+  `version`, the parameter ids, `params` in the order of their indices and
+  `paramDescriptors` with ranges and defaults. `AudTempoDelay` adds
+  `divisions`, `divisionBeats` and `maxSeconds`, `AudLimiter` adds
+  `lookaheadSeconds` and `lookaheadFrames(sampleRate)`.
+  `audDspEffectsVersion` is the version of the package.
+- `aud_dsp_effects_ffi.dart` adds `AudDspEffects`: `name` and `register` -
+  the register function - for the package list of an engine;
+  `registerWith` registers with the host api of a graph and throws an
+  `AudDspEffectsException` with the result `code` and the `operation` when
+  the engine refuses.
+- `register`, `registerWith` and `AudEffectsBench.measure` are recorded
+  with `@RecordUse`: in a profile or release build the link hook keeps the
+  native library only when the app uses one of them.
+- `testing.dart` adds `AudEffectsBench.measure`, which returns an
+  `AudEffectsBenchResult`: the mean, the p99 and the maximum in
+  nanoseconds, their shares of the block and `toJson()`.
 
 ## Contributing
 

@@ -18,6 +18,7 @@ import 'package:aud_audio_core/aud_audio_core.dart';
 /// all of them ramp. The tail lasts until the tank has decayed by 60 dB at
 /// the decay, at most 30 s.
 abstract final class AudPlateReverb {
+  // ...........................................................................
   /// The type id of the node.
   static const String typeId = 'aud.effects.plate';
 

@@ -11,6 +11,7 @@ import 'package:aud_audio_core/aud_audio_core.dart';
 /// peak of the LFO and `1 - depth` at its trough. A mono input feeds both
 /// sides; the output is stereo.
 abstract final class AudTremolo {
+  // ...........................................................................
   /// The type id of the node.
   static const String typeId = 'aud.effects.tremolo';
 

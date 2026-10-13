@@ -23,6 +23,30 @@ class AudEffectsBenchResult {
   });
 
   // ...........................................................................
+  /// The result as JSON, e.g. for the report of an integration test.
+  Map<String, Object> toJson() => {
+    'typeId': typeId,
+    'sampleRate': sampleRate,
+    'frames': frames,
+    'channels': channels,
+    'blocks': blocks,
+    'blockNs': blockNs,
+    'meanNs': meanNs,
+    'p99Ns': p99Ns,
+    'maxNs': maxNs,
+    'meanShare': meanShare,
+    'p99Share': p99Share,
+    'maxShare': maxShare,
+  };
+
+  @override
+  String toString() =>
+      '$typeId: mean ${_micros(meanNs)} µs, p99 ${_micros(p99Ns)} µs, '
+      'max ${_micros(maxNs)} µs per block of $frames frames at '
+      '${sampleRate.round()} Hz (${(meanShare * 100).toStringAsFixed(2)} % '
+      'of the block)';
+
+  // ...........................................................................
   /// The type id of the node.
   final String typeId;
 
@@ -59,29 +83,6 @@ class AudEffectsBenchResult {
 
   /// [maxNs] as a share of [blockNs].
   double get maxShare => maxNs / blockNs;
-
-  /// The result as JSON, e.g. for the report of an integration test.
-  Map<String, Object> toJson() => {
-    'typeId': typeId,
-    'sampleRate': sampleRate,
-    'frames': frames,
-    'channels': channels,
-    'blocks': blocks,
-    'blockNs': blockNs,
-    'meanNs': meanNs,
-    'p99Ns': p99Ns,
-    'maxNs': maxNs,
-    'meanShare': meanShare,
-    'p99Share': p99Share,
-    'maxShare': maxShare,
-  };
-
-  @override
-  String toString() =>
-      '$typeId: mean ${_micros(meanNs)} µs, p99 ${_micros(p99Ns)} µs, '
-      'max ${_micros(maxNs)} µs per block of $frames frames at '
-      '${sampleRate.round()} Hz (${(meanShare * 100).toStringAsFixed(2)} % '
-      'of the block)';
 
   static String _micros(double ns) => (ns / 1000).toStringAsFixed(1);
 }

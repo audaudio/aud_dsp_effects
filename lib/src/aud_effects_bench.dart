@@ -24,9 +24,10 @@ import 'aud_effects_bench_result.dart';
 ///
 /// ```dart
 /// final result = AudEffectsBench.measure(AudPlateReverb.typeId);
-/// print(result); // aud.effects.plate: mean 41.2 µs, p99 ...
+/// print(result); // aud.effects.plate: mean 3.5 µs, p99 ...
 /// ```
 abstract final class AudEffectsBench {
+  // ...........................................................................
   /// Times the node [typeId] and returns the render time of its blocks.
   ///
   /// - [sampleRate] the sample rate in Hz, 8 to 384 kHz

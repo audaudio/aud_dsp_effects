@@ -62,6 +62,18 @@ struct AudPlateDelay {
     return data[position >= t ? position - t : position + size - t];
   }
 
+  // The frame `delay` frames before `position`, read with linear
+  // interpolation; 0 <= delay < size - 1.
+  float read(double delay) const {
+    double at = static_cast<double>(position) - delay;
+    if (at < 0) at += size;
+    uint32_t i0 = static_cast<uint32_t>(at);
+    const float fraction = static_cast<float>(at - i0);
+    if (i0 >= size) i0 -= size;
+    const uint32_t i1 = i0 + 1 == size ? 0 : i0 + 1;
+    return data[i0] + fraction * (data[i1] - data[i0]);
+  }
+
   void clear();
 };
 
@@ -82,14 +94,7 @@ struct AudPlateModulatedAllpass {
   AudPlateDelay line;  // holds w; longer than the longest delay
 
   float process(float x, float k, double delay) {
-    double read = static_cast<double>(line.position) - delay;
-    if (read < 0) read += line.size;
-    uint32_t i0 = static_cast<uint32_t>(read);
-    const float fraction = static_cast<float>(read - i0);
-    if (i0 >= line.size) i0 -= line.size;
-    const uint32_t i1 = i0 + 1 == line.size ? 0 : i0 + 1;
-    const float delayed =
-        line.data[i0] + fraction * (line.data[i1] - line.data[i0]);
+    const float delayed = line.read(delay);
     const float w = flush(x - k * delayed);
     line.process(w);
     return k * w + delayed;
@@ -102,14 +107,9 @@ struct AudPlatePreDelay {
 
   float process(float x, double delay) {
     line.data[line.position] = x;
-    double read = static_cast<double>(line.position) - delay;
-    if (read < 0) read += line.size;
-    uint32_t i0 = static_cast<uint32_t>(read);
-    const float fraction = static_cast<float>(read - i0);
-    if (i0 >= line.size) i0 -= line.size;
-    const uint32_t i1 = i0 + 1 == line.size ? 0 : i0 + 1;
+    const float y = line.read(delay);
     if (++line.position == line.size) line.position = 0;
-    return line.data[i0] + fraction * (line.data[i1] - line.data[i0]);
+    return y;
   }
 };
 

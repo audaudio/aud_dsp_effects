@@ -17,6 +17,7 @@ import 'package:aud_audio_core/aud_audio_core.dart';
 /// all of them ramp. The tail lasts until the longest comb has decayed by
 /// 60 dB at the room size, at most 30 s.
 abstract final class AudFreeverb {
+  // ...........................................................................
   /// The type id of the node.
   static const String typeId = 'aud.effects.freeverb';
 

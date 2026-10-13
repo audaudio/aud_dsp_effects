@@ -18,6 +18,7 @@ import 'package:aud_audio_core/aud_audio_core.dart';
 /// lasts until the echoes have decayed by 60 dB, at most 30 s; a feedback
 /// of 0.999 and more never ends.
 abstract final class AudStereoDelay {
+  // ...........................................................................
   /// The type id of the node.
   static const String typeId = 'aud.effects.stereo_delay';
 

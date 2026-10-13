@@ -3,6 +3,7 @@
 //
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
+
 // Measures the effects on a simulator, an emulator or a device (ticket 28,
 // scope 6) and prints one line of JSON per measurement:
 //

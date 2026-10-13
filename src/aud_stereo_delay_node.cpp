@@ -103,7 +103,9 @@ AudStereoDelayNode::AudStereoDelayNode(const AudNodeDescriptor*,
     : AudDelayNode(kStereoDelayParams, AUD_STEREO_DELAY_NUM_PARAMS,
                    AUD_STEREO_DELAY_PARAM_FEEDBACK,
                    AUD_STEREO_DELAY_PARAM_MIX,
-                   AUD_STEREO_DELAY_PARAM_PING_PONG, 2.0) {}
+                   AUD_STEREO_DELAY_PARAM_PING_PONG,
+                   kStereoDelayParams[AUD_STEREO_DELAY_PARAM_TIME].max_value) {
+}
 
 AudDelayTime AudStereoDelayNode::timeOf(const AudProcessContext&) {
   const AudParamRamp& r = ramp(AUD_STEREO_DELAY_PARAM_TIME);

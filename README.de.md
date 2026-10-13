@@ -204,8 +204,9 @@ Minimum über den Look-ahead von L Frames, lässt einen Release-Folger sie
 höchstens mit dem Release anheben, glättet sie mit einem Boxfilter aus
 L + 1 Frames und wendet sie auf das um L Frames verzögerte Signal an,
 sodass jede Spitze auf die voll abgesenkte Verstärkung trifft; eine
-letzte Begrenzung auf die Obergrenze fängt Rundungen ab. Werte, die keine
-Zahl sind, zählen als Stille.
+letzte Begrenzung auf die Obergrenze fängt Rundungen ab. Werte, die nicht
+endlich sind - keine Zahl oder unendlich, auch nach der Verstärkung -,
+zählen als Stille.
 
 Die Bench (`testing.dart`) registriert das Paket bei einem eigenen Host,
 rechnet einen Node über seine vtable und misst jeden Process-Aufruf mit
@@ -214,6 +215,28 @@ Auf einem Apple M5 bei 48 kHz und 256 Frames je Block liegt das Mittel je
 Block bei etwa 4 µs für Freeverb, 3,5 µs für die Platte, 2 µs je Delay,
 1 µs für den Limiter und 0,6 µs für das Tremolo - weit unter 0,1 % des
 Blocks.
+
+### Die Dart-API
+
+- `aud_dsp_effects.dart` ist plattformneutral und übersetzt fürs Web: je
+  Node eine Klasse - `AudFreeverb`, `AudPlateReverb`, `AudStereoDelay`,
+  `AudTempoDelay`, `AudLimiter`, `AudTremolo` - mit ihrer `typeId`, ihrer
+  `version`, den Parameter-IDs, `params` in der Reihenfolge ihrer Indizes
+  und `paramDescriptors` mit Bereichen und Vorgaben. `AudTempoDelay`
+  ergänzt `divisions`, `divisionBeats` und `maxSeconds`, `AudLimiter`
+  ergänzt `lookaheadSeconds` und `lookaheadFrames(sampleRate)`.
+  `audDspEffectsVersion` ist die Version des Pakets.
+- `aud_dsp_effects_ffi.dart` ergänzt `AudDspEffects`: `name` und
+  `register` - die Register-Funktion - für die Paketliste einer Engine;
+  `registerWith` registriert beim Host-API eines Graphen und wirft eine
+  `AudDspEffectsException` mit dem Ergebnis-`code` und der `operation`,
+  wenn die Engine ablehnt.
+- `register`, `registerWith` und `AudEffectsBench.measure` sind mit
+  `@RecordUse` aufgezeichnet: in einem Profile- oder Release-Build behält
+  der Link-Hook die native Bibliothek nur, wenn die App eines davon nutzt.
+- `testing.dart` ergänzt `AudEffectsBench.measure`, das ein
+  `AudEffectsBenchResult` liefert: das Mittel, das p99 und das Maximum in
+  Nanosekunden, ihre Anteile am Block und `toJson()`.
 
 ## Mitarbeit
 

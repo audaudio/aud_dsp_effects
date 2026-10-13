@@ -17,9 +17,9 @@ import 'aud_dsp_effects_bindings_generated.dart' as bindings;
 /// the plate reverb, the stereo and the tempo delay, the limiter and the
 /// tremolo.
 ///
-/// Every member is recorded (`@RecordUse`): in a profile or release build
-/// the link hook of the package keeps its native library only when an app
-/// uses one of them.
+/// [register] and [registerWith] are recorded (`@RecordUse`): in a profile
+/// or release build the link hook of the package keeps its native library
+/// only when an app uses one of them.
 ///
 /// ```dart
 /// final engine = AudEngine(packages: [
@@ -27,9 +27,11 @@ import 'aud_dsp_effects_bindings_generated.dart' as bindings;
 /// ]);
 /// ```
 abstract final class AudDspEffects {
+  // ...........................................................................
   /// The name of the package, e.g. for an engine's package list.
   static const String name = 'aud_dsp_effects';
 
+  // ...........................................................................
   /// The register function of the package,
   /// `aud_dsp_effects_register(const AudHostApi*)`, which an engine calls
   /// with its host api.
@@ -59,14 +61,16 @@ class AudDspEffectsException implements Exception {
     this.operation = 'registration',
   });
 
+  // ...........................................................................
+  @override
+  String toString() =>
+      'AudDspEffectsException: $operation failed with '
+      '${AudAbi.resultName(code)}';
+
+  // ...........................................................................
   /// The result code, one of the `AUD_ERROR_*` constants.
   final int code;
 
   /// What failed, e.g. `registration`.
   final String operation;
-
-  @override
-  String toString() =>
-      'AudDspEffectsException: $operation failed with '
-      '${AudAbi.resultName(code)}';
 }

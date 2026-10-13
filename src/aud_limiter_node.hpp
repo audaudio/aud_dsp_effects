@@ -95,8 +95,8 @@ class AudLimiterNode : public AudEffectNode {
     float of(float value);
   };
 
-  // Pushes the required gain of frame `frame` and returns the minimum of
-  // the window.
+  // Pushes the gain `required` of the next frame and returns the minimum
+  // of the window.
   float slidingMinimum(float required);
 
   uint32_t lookahead_ = 0;

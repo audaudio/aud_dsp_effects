@@ -64,38 +64,9 @@ class EffectsChain {
   }
 
   // ...........................................................................
-  /// The graph.
-  final AudGraph graph;
-
-  /// The oscillators of the chord, one per note of [notes].
-  final List<AudNode> oscillators = [];
-
-  /// Whether the chord sounds.
-  bool get gate => _gate;
-
-  /// Whether the chord plays through the effects; without them it goes
-  /// straight to the output.
-  bool get effects => _effects;
-
-  /// The reverb of the chain.
-  EffectsReverb get reverb => _reverb;
-
-  /// The stereo delay, or null without the effects.
-  AudNode? get delay => _delay;
-
-  /// The reverb node, or null without the effects.
-  AudNode? get reverbNode => _reverbNode;
-
-  /// The limiter, or null without the effects.
-  AudNode? get limiter => _limiter;
-
-  /// The input gain of the limiter in dB.
-  double get drive => valueOf(AudLimiter.typeId, AudLimiter.gain);
-
   /// The value of the parameter [param] of the node type [typeId].
   double valueOf(String typeId, String param) => _values[typeId]![param]!;
 
-  // ...........................................................................
   /// Opens the chord ([on]) or closes it, ramped.
   void setGate(bool on) {
     _gate = on;
@@ -183,6 +154,35 @@ class EffectsChain {
         typeId: Map<String, double>.of(_values[typeId]!),
     },
   };
+
+  // ...........................................................................
+  /// The graph.
+  final AudGraph graph;
+
+  /// The oscillators of the chord, one per note of [notes].
+  final List<AudNode> oscillators = [];
+
+  /// Whether the chord sounds.
+  bool get gate => _gate;
+
+  /// Whether the chord plays through the effects; without them it goes
+  /// straight to the output.
+  bool get effects => _effects;
+
+  /// The reverb of the chain.
+  EffectsReverb get reverb => _reverb;
+
+  /// The stereo delay, or null without the effects.
+  AudNode? get delay => _delay;
+
+  /// The reverb node, or null without the effects.
+  AudNode? get reverbNode => _reverbNode;
+
+  /// The limiter, or null without the effects.
+  AudNode? get limiter => _limiter;
+
+  /// The input gain of the limiter in dB.
+  double get drive => valueOf(AudLimiter.typeId, AudLimiter.gain);
 
   // ...........................................................................
   /// The MIDI notes of the chord across three octaves: C2, G2, E3, G3, B3,

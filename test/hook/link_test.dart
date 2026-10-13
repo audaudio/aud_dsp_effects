@@ -70,7 +70,7 @@ void main() {
         (benchLibrary, 'AudEffectsBench'),
       ]) {
         final file = await Isolate.resolvePackageUri(Uri.parse(library));
-        final source = File.fromUri(file!).readAsStringSync();
+        final source = await File.fromUri(file!).readAsString();
         final body = RegExp(
           'class $className \\{([\\s\\S]*?)\\n\\}',
         ).firstMatch(source)!.group(1)!;

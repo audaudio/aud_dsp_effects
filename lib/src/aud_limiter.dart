@@ -18,6 +18,7 @@ import 'package:aud_audio_core/aud_audio_core.dart';
 /// and reported as its latency and its tail
 /// ([lookaheadFrames] at the sample rate).
 abstract final class AudLimiter {
+  // ...........................................................................
   /// The type id of the node.
   static const String typeId = 'aud.effects.limiter';
 

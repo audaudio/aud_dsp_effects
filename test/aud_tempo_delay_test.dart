@@ -35,9 +35,9 @@ void main() {
     return (graph, node);
   }
 
-  // The frame of the first echo of an impulse, after a second of silence
-  // in which the delay glides to its time.
-  int echoFrame(AudGraphFfi graph) {
+  // The frame of the first echo of an impulse within [frames], after a
+  // second of silence in which the delay glides to its time.
+  int echoFrame(AudGraphFfi graph, {int frames = 96000}) {
     final renderer = AudOfflineRenderer(graph);
     final silence = Float32List(48000);
     renderer.render(
@@ -46,9 +46,9 @@ void main() {
         [silence, silence],
       ],
     );
-    final input = Float32List(96000)..[0] = 1;
+    final input = Float32List(frames)..[0] = 1;
     final left = renderer.render(
-      frames: 96000,
+      frames: frames,
       inputs: [
         [input, input],
       ],
@@ -118,6 +118,25 @@ void main() {
         AudTempoDelay.divisions.indexOf('1/4').toDouble(),
       );
       expect(echoFrame(graph), 19200);
+    });
+
+    test('plays at most maxSeconds for a longer division', () {
+      final (graph, node) = tempoDelay();
+      // A whole note at 30 BPM lasts 8 s; the delay plays 4 s.
+      graph.transport(const AudTransportRequest.setTempo(30));
+      graph.setParam(
+        node,
+        AudTempoDelay.division,
+        AudTempoDelay.divisions.indexOf('1/1').toDouble(),
+      );
+      expect(
+        AudTempoDelay.divisionBeats.last * 60 / 30,
+        greaterThan(AudTempoDelay.maxSeconds),
+      );
+      expect(
+        echoFrame(graph, frames: 200000),
+        (AudTempoDelay.maxSeconds * 48000).round(),
+      );
     });
   });
 }

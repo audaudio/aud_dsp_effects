@@ -38,7 +38,7 @@ constexpr uint32_t kCapabilities = AUD_NODE_CAP_IN_PLACE |
                                    AUD_NODE_CAP_VARIABLE_BLOCK |
                                    AUD_NODE_CAP_EVENTS | AUD_NODE_CAP_TAIL;
 
-// The flags of a ramped and of a stepped parameter.
+// The flags of a ramped, a stepped and a boolean parameter.
 constexpr uint32_t kRamped = AUD_PARAM_AUTOMATABLE | AUD_PARAM_RAMPED;
 constexpr uint32_t kStepped = AUD_PARAM_AUTOMATABLE | AUD_PARAM_STEPPED;
 constexpr uint32_t kBoolean = AUD_PARAM_AUTOMATABLE | AUD_PARAM_BOOLEAN;

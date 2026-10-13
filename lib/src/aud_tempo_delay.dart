@@ -14,6 +14,7 @@ import 'package:aud_audio_core/aud_audio_core.dart';
 /// the tempo or the division changes. A mono input feeds both sides; the
 /// output is stereo.
 abstract final class AudTempoDelay {
+  // ...........................................................................
   /// The type id of the node.
   static const String typeId = 'aud.effects.tempo_delay';
 

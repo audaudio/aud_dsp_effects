@@ -22,6 +22,19 @@
 - Describe the example in the READMEs
 - Add the limit of the tempo delay to its documentation
 - Divisions longer than 4 s, e.g. 1/1 below 60 BPM, play 4 s and leave the beat
+- Add review fixes: one plate read and the Dart API in README
+- Read the interpolated frame of the plate's pre-delay and modulated allpasses through one AudPlateDelay::read; the goldens are unchanged
+- Take the longest time of the stereo delay from its parameter descriptor instead of a second 2.0
+- Split the bench into chordAt, benchHost and summarize, so no loop nests four deep
+- Fix the comments of the limiter's slidingMinimum and of the parameter flags
+- Add the comment landmarks of the code guide and put methods before fields in AudEffectsBenchResult, AudDspEffectsException and the example's EffectsChain
+- Say that only register and registerWith of AudDspEffects are recorded; the bench example shows 3.5 us like the README
+- Test that the tempo delay plays at most AudTempoDelay.maxSeconds for a longer division
+- Group the tests of AudDspEffects, AudDspEffectsException and AudEffectsBenchResult by the member they cover
+- Read the sources asynchronously in test/hook/link_test.dart
+- Describe the Dart API in README.md and README.de.md; mix is a linear crossfade and non-finite samples count as silence in both
+- Name aud_audio as the dependency of the example in index.jsonc
+- Separate the license header of the example's integration test and driver by a blank line
 
 ## 0.1.0 - 2026-10-08
 

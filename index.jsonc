@@ -24,7 +24,8 @@
     // "<repo-a>": "why / API"
     "uses": {
       "aud_audio_core": "package dependency: C ABI 0.4 header, AudNodeBase, AudParamDescriptor",
-      "aud_audio_graph": "dev dependency: engine of the native, golden and Dart tests"
+      "aud_audio_graph": "dev dependency: engine of the native, golden and Dart tests",
+      "aud_audio": "example/ dependency: AudEngine plays the chord through delay -> plate -> limiter"
     },
 
     // "<repo-b>": "why / API"
