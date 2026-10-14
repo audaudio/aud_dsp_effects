@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- S9b: Limit the voices of the sampler by the CPU power of the device
+
 ## 0.2.0 - 2026-10-14
 
 ### Added
