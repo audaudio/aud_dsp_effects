@@ -4,122 +4,58 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import 'dart:ffi';
+import 'dart:math';
+import 'dart:typed_data';
 
-import 'package:aud_audio_core/aud_audio_core.dart';
-import 'package:aud_dsp_effects/aud_dsp_effects.dart';
-import 'package:ffi/ffi.dart';
+import 'package:aud_audio_graph/aud_audio_graph_ffi.dart';
+import 'package:aud_dsp_effects/aud_dsp_effects_ffi.dart';
+import 'package:aud_dsp_effects/src/aud_dsp_effects_bindings_generated.dart'
+    as bindings;
 import 'package:test/test.dart';
-
-// A fake host: records the descriptors a package registers and answers
-// with a configurable result. Registration runs synchronously on the
-// calling thread, so an isolate-local callable serves as the callback.
-class FakeHost {
-  FakeHost({this.result = AUD_OK, int abiMajor = AudAbi.major}) {
-    api = calloc<AudHostApi>();
-    api.ref
-      ..struct_size = sizeOf<AudHostApi>()
-      ..abi_major = abiMajor
-      ..abi_minor = AudAbi.minor
-      ..host = api.cast()
-      ..register_node_type = _register.nativeFunction;
-  }
-
-  final int result;
-  late final Pointer<AudHostApi> api;
-  final List<AudNodeDescriptor> descriptors = [];
-  late final _register =
-      NativeCallable<
-        Int32 Function(Pointer<Void>, Pointer<AudNodeDescriptor>)
-      >.isolateLocal(_onRegister, exceptionalReturn: AUD_ERROR_FAILED);
-
-  int _onRegister(Pointer<Void> host, Pointer<AudNodeDescriptor> descriptor) {
-    expect(host, api.cast<Void>());
-    descriptors.add(descriptor.ref);
-    return result;
-  }
-
-  void dispose() {
-    _register.close();
-    calloc.free(api);
-  }
-}
 
 void main() {
   group('AudTremolo', () {
-    test('names the type and the parameter indices', () {
-      expect(AudTremolo.typeId, 'aud.effects.tremolo');
-      expect(AudTremolo.rate, 0);
-      expect(AudTremolo.depth, 1);
-    });
-  });
-
-  group('AudDspEffects.register(hostApi)', () {
-    late FakeHost host;
-
-    tearDown(() => host.dispose());
-
-    test('registers the tremolo with the ABI version it was built against', () {
-      host = FakeHost();
-      AudDspEffects.register(host.api.cast());
-      final descriptor = host.descriptors.single;
-      expect(descriptor.type_id.cast<Utf8>().toDartString(), AudTremolo.typeId);
-      expect(descriptor.abi_major, AudAbi.major);
-      expect(descriptor.abi_minor, AudAbi.minor);
-      expect(descriptor.struct_size, sizeOf<AudNodeDescriptor>());
-      expect(descriptor.capabilities & AUD_NODE_CAP_IN_PLACE, isNonZero);
-      expect(descriptor.num_inputs, 1);
-      expect(descriptor.num_outputs, 1);
-      expect(descriptor.num_params, 2);
-      final params = descriptor.params;
-      expect(params[0].id.cast<Utf8>().toDartString(), 'rate');
-      expect(params[0].unit.cast<Utf8>().toDartString(), 'Hz');
-      expect(params[1].id.cast<Utf8>().toDartString(), 'depth');
-      expect(params[1].max_value, 1);
-      final vtable = descriptor.vtable.ref;
-      expect(vtable.struct_size, sizeOf<AudNodeVTable>());
-      expect(vtable.process, isNot(nullptr));
-      expect(vtable.event, nullptr);
-    });
-
-    test('throws when the host refuses the node type', () {
-      host = FakeHost(result: AUD_ERROR_DUPLICATE_TYPE);
+    test('follows the indices of the C header', () {
+      expect(AudTremolo.typeId, bindings.AUD_DSP_EFFECTS_TREMOLO_TYPE_ID);
+      expect(AudTremolo.params, hasLength(bindings.AUD_TREMOLO_NUM_PARAMS));
       expect(
-        () => AudDspEffects.register(host.api.cast()),
-        throwsA(
-          isA<AudDspEffectsException>()
-              .having((e) => e.code, 'code', AUD_ERROR_DUPLICATE_TYPE)
-              .having((e) => e.toString(), 'toString', contains('DUPLICATE')),
-        ),
+        {for (final (index, id) in AudTremolo.params.indexed) id: index},
+        {
+          AudTremolo.rate: bindings.AUD_TREMOLO_PARAM_RATE,
+          AudTremolo.depth: bindings.AUD_TREMOLO_PARAM_DEPTH,
+        },
       );
     });
 
-    test('refuses a host of another ABI major without registering', () {
-      host = FakeHost(abiMajor: AudAbi.major + 1);
-      expect(
-        () => AudDspEffects.register(host.api.cast()),
-        throwsA(
-          isA<AudDspEffectsException>().having(
-            (e) => e.code,
-            'code',
-            AUD_ERROR_ABI_MAJOR,
-          ),
-        ),
+    test('moves the gain from 1 down to 1 - depth at the rate', () {
+      final graph = AudGraphFfi(
+        listen: false,
+        maxFrames: 128,
+        inputChannels: const [2],
       );
-      expect(host.descriptors, isEmpty);
-    });
-
-    test('refuses a null host', () {
-      host = FakeHost();
+      addTearDown(graph.dispose);
+      AudDspEffects.registerWith(graph.hostApi);
+      final node = graph.createNode(AudTremolo.typeId);
+      graph.setParam(node, AudTremolo.rate, 2);
+      graph.setParam(node, AudTremolo.depth, 0.8);
+      graph.transaction((tx) {
+        tx.connect(graph.io, node);
+        tx.connect(node, graph.io);
+      });
+      graph.start();
+      final ones = Float32List(48000)..fillRange(0, 48000, 1);
+      final left = AudOfflineRenderer(graph).render(
+        frames: 48000,
+        inputs: [
+          [ones, ones],
+        ],
+      )[0][0];
+      expect(left.reduce(max), closeTo(1, 1e-4));
+      expect(left.reduce(min), closeTo(0.2, 1e-4));
+      // Two cycles a second: the peaks after a quarter cycle and one more.
       expect(
-        () => AudDspEffects.register(nullptr),
-        throwsA(
-          isA<AudDspEffectsException>().having(
-            (e) => e.code,
-            'code',
-            AUD_ERROR_INVALID_ARGUMENT,
-          ),
-        ),
+        [left[6000], left[18000], left[30000]],
+        [closeTo(1, 1e-4), closeTo(0.2, 1e-4), closeTo(1, 1e-4)],
       );
     });
   });
