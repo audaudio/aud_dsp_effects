@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4 - 2026-10-24
+
+### Changed
+
+- Run the native tests on Windows
+
 ## 0.2.3 - 2026-10-22
 
 ## 0.2.2 - 2026-10-15
