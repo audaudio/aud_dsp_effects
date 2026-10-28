@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.3.0 - 2026-10-28
+
+### Changed
+
+- Require Dart 3.13 and upgrade the dependencies
+
+- Require Dart 3.13
+
+- Upgrade dna_audanika to ^0.1.0
+
+- Upgrade helix to ^1.14.0
+
+- Set the identity the DNA layers ask for in dna/_vars.json
+
+- Reformat 3 files with the Dart 3.13 formatter
+
+- Add the blog post of this change, in English and German
+
+- Bring the README to the README template, in English and German
+
+- Upgrade the dependencies published since the first pass
+
+- Lift the lock file to the newest resolvable versions
+
+- Resolve the example together with the package
+
+- Add the example to a pub workspace, resolution: workspace in the example
+
+- Drop the lock file of the example, the package lock covers it
+
+- Keep test within the test_api that flutter_test pins
+
 ## 0.2.4 - 2026-10-24
 
 ### Changed

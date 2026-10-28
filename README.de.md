@@ -1,14 +1,19 @@
 # aud_dsp_effects
 
-Die Effekt-Nodes der Audanika Audio Engine: Freeverb, ein Plattenhall,
-ein Stereo- und ein tempo-synchrones Delay, ein Limiter mit Look-ahead für
-die Summe eines Graphen und ein Tremolo. Die Nodes laufen auf der Engine
-von `aud_audio` unter iOS und Android, rampen ihre Parameter und
-allokieren nichts auf dem Audio-Thread.
+[English](README.md) | Deutsch
+
+[![CI](https://github.com/audaudio/aud_dsp_effects/actions/workflows/quick_check.yaml/badge.svg)](https://github.com/audaudio/aud_dsp_effects/actions/workflows/quick_check.yaml)
+
+Effekte der Audanika Audio Engine: Hall, Delays, Oszillatoren, Filter,
+Dynamik, Modulation, Verzerrung. Heute liefert das Paket Freeverb, einen
+Plattenhall, ein Stereo- und ein tempo-synchrones Delay, einen Limiter mit
+Look-ahead für die Summe eines Graphen und ein Tremolo. Die Nodes laufen
+auf der Engine von `aud_audio` unter iOS und Android, rampen ihre
+Parameter und allokieren nichts auf dem Audio-Thread.
 
 Teil der Audanika Audio Engine; geplant in [aud_audio_pm](https://github.com/audaudio/aud_audio_pm).
 
-## Ziele
+## Motivation
 
 - Hall, Delay und ein Master-Limiter als Nodes der Engine (Ticket 28,
   Schritt S10a), für die Master-Kette einer App: Delay, Hall, Limiter
@@ -44,31 +49,13 @@ clang, das ihn hat, etwa LLVM aus Homebrew unter macOS
 (`brew install llvm`), und entfällt ohne eines.
 
 ```bash
-dart test                       # Dart-Tests, Goldens, native Tests
-node scripts/test-native.js     # nur die nativen Tests
-node scripts/check-notices.js   # die Hinweise zu fremdem Code
+dart test                       # Dart tests, goldens, native tests
+node scripts/test-native.js     # the native tests alone
+node scripts/check-notices.js   # the third-party notices
 UPDATE_GOLDENS=1 dart test test/aud_effects_golden_test.dart
 ```
 
-## Dokumentation
-
-- [Der Plan von Ticket 28](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/tickets/2026-10-13-28-build-reverb-delay-and-a-master-limiter.md)
-  mit den Nodes, ihren Voreinstellungen und den Messungen
-- Die Entscheidungen hinter dem Paket:
-  [dsp-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/dsp-001.md)
-  (Quellen mit klarer Herkunft),
-  [license-002](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/license-002.md)
-  (MIT, kein LGPL),
-  [abi-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/abi-001.md)
-  (die C-ABI),
-  [build-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/build-001.md)
-  (fremdes C++, vom Hook übersetzt)
-- Die C-API: [`src/aud_dsp_effects.h`](src/aud_dsp_effects.h)
-- Der übernommene Code, seine Lizenzen und die Prüfung:
-  [`src/third_party/NOTICES.md`](src/third_party/NOTICES.md)
-- Die Guides in [`doc/guides`](doc/guides)
-
-## Code-Beispiele
+## Nutzung
 
 Die Master-Kette einer App auf der Engine von `aud_audio`
 (`aud_audio_ffi.dart` auf nativen Plattformen): die Summe der Instrumente
@@ -101,12 +88,12 @@ void main() {
       ..connect(limiter, graph.io),
   );
   engine.start();
-  // Die Instrumente an `delay` anschließen; ihre Verbindungen summieren sich.
+  // Connect the instruments to `delay`; their connections sum.
 
-  // Ein Preset mit mehr Hall, über 100 ms gerampt.
+  // A preset with more reverb, ramped over 100 ms.
   graph.setParam(plate, AudPlateReverb.mix, 0.3, rampFrames: 4800);
   graph.setParam(plate, AudPlateReverb.decay, 0.7, rampFrames: 4800);
-  print(graph.latencyOf(limiter)); // 72 Frames bei 48 kHz: der Look-ahead
+  print(graph.latencyOf(limiter)); // 72 frames at 48 kHz: the look-ahead
 }
 ```
 
@@ -118,7 +105,7 @@ import 'package:aud_dsp_effects/aud_dsp_effects.dart';
 
 void main() {
   for (final param in AudPlateReverb.paramDescriptors) {
-    print('${param.id}: ${param.min} bis ${param.max}, ${param.defaultValue}');
+    print('${param.id}: ${param.min} to ${param.max}, ${param.defaultValue}');
   }
   print(AudTempoDelay.divisions); // [1/32, 1/16T, 1/32D, 1/16, ...]
   print(AudLimiter.lookaheadFrames(44100)); // 66
@@ -156,7 +143,7 @@ cd example
 flutter run -d <device>
 flutter test integration_test/effects_test.dart -d <device> \
   --dart-define=AUD_MEASURE_SECONDS=10
-# Dasselbe auf einem iPhone über WLAN
+# The same on an iPhone over Wi-Fi
 flutter drive --driver=test_driver/integration_test.dart \
   --target=integration_test/effects_test.dart -d <device> --publish-port \
   --dart-define=AUD_MEASURE_SECONDS=10
@@ -171,6 +158,37 @@ Callbacks, Xruns, verspätete Callbacks, die Renderzeit mit und ohne die
 Effekte und die Ausgangsspitze, die an der Obergrenze bleibt; dazu die
 Latenz des Limiters, die ein offline auf dem Gerät gerechneter Impuls
 bestätigt.
+
+## Einschränkungen
+
+- Von den Effekten seiner Beschreibung liefert das Paket heute Hall,
+  Delays, einen Limiter und ein Tremolo; Oszillatoren, Filter, Verzerrung
+  und weitere Modulation sind in `aud_audio_pm` geplant
+- Kein Faust, kein Soundpipe, kein LGPL: ein Node wird nur mit klarer
+  Herkunft übernommen (dsp-001, license-002)
+- Der Limiter verzögert das Signal um seinen Look-ahead, 1,5 ms (72 Frames
+  bei 48 kHz), und meldet ihn als seine Latenz
+- Das Tempo-Delay spielt höchstens 4 s: Teilungen, die beim Tempo des
+  Transports länger sind, verlassen den Schlag
+- Das Stereo-Delay klingt ab Feedback 0.999 nie mehr ab
+
+## Dokumentation
+
+- [Der Plan von Ticket 28](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/tickets/2026-10-13-28-build-reverb-delay-and-a-master-limiter.md)
+  mit den Nodes, ihren Voreinstellungen und den Messungen
+- Die Entscheidungen hinter dem Paket:
+  [dsp-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/dsp-001.md)
+  (Quellen mit klarer Herkunft),
+  [license-002](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/license-002.md)
+  (MIT, kein LGPL),
+  [abi-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/abi-001.md)
+  (die C-ABI),
+  [build-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/build-001.md)
+  (fremdes C++, vom Hook übersetzt)
+- Die C-API: [`src/aud_dsp_effects.h`](src/aud_dsp_effects.h)
+- Der übernommene Code, seine Lizenzen und die Prüfung:
+  [`src/third_party/NOTICES.md`](src/third_party/NOTICES.md)
+- Die Guides in [`doc/guides`](doc/guides)
 
 ## Funktionsweise
 
@@ -238,10 +256,23 @@ Blocks.
   `AudEffectsBenchResult` liefert: das Mittel, das p99 und das Maximum in
   Nanosekunden, ihre Anteile am Block und `toJson()`.
 
-## Mitarbeit
+## Status
+
+Vor 1.0 — die API kann sich zwischen Minor-Versionen ändern. Das Paket liefert die Nodes von Ticket 28
+(Schritt S10a); die übrigen Effekte seiner Beschreibung sind in
+`aud_audio_pm` geplant.
+
+## Mitwirken
 
 Gearbeitet wird Ticket für Ticket mit dem `gg`-Workflow; siehe den
 [Develop Guide](doc/guides/develop-guide.md) und den
 [Review Guide](doc/guides/for-ai/ai-review-guide.md). Jeder Commit besteht
 `dart analyze`, `dart format`, `dart test` mit 100 % Abdeckung von `lib/`,
 die nativen Tests und die Prüfung der Hinweise.
+
+## Lizenz
+
+MIT — siehe [LICENSE](LICENSE). Der übernommene Code unter
+`src/third_party` behält seine eigenen Lizenzen;
+[`src/third_party/NOTICES.md`](src/third_party/NOTICES.md) nennt sie und
+die Prüfung der Herkunft jedes Nodes.

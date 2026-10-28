@@ -58,9 +58,8 @@ void main() {
       tx.connect(node, graph.io);
     });
     graph.start();
-    return AudOfflineRenderer(
-      graph,
-    ).render(frames: frames, blockFrames: 128, inputs: [signal()])[0];
+    return AudOfflineRenderer(graph)
+        .render(frames: frames, blockFrames: 128, inputs: [signal()])[0];
   }
 
   // Compares [channels] with the golden [name], which UPDATE_GOLDENS=1
