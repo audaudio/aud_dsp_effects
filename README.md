@@ -1,13 +1,19 @@
 # aud_dsp_effects
 
-The effect nodes of the Audanika Audio Engine: Freeverb, a plate reverb,
-a stereo and a tempo-synced delay, a look-ahead limiter for the sum of a
-graph and a tremolo. The nodes run on the engine of `aud_audio` on iOS and
-Android, ramp their parameters and allocate nothing on the audio thread.
+English | [Deutsch](README.de.md)
+
+[![CI](https://github.com/audaudio/aud_dsp_effects/actions/workflows/quick_check.yaml/badge.svg)](https://github.com/audaudio/aud_dsp_effects/actions/workflows/quick_check.yaml)
+
+Effects of the Audanika Audio Engine: reverbs, delays, oscillators,
+filters, dynamics, modulation, distortion. Today the package ships
+Freeverb, a plate reverb, a stereo and a tempo-synced delay, a look-ahead
+limiter for the sum of a graph and a tremolo. The nodes run on the engine
+of `aud_audio` on iOS and Android, ramp their parameters and allocate
+nothing on the audio thread.
 
 Part of the Audanika Audio Engine; planned in [aud_audio_pm](https://github.com/audaudio/aud_audio_pm).
 
-## Goals
+## Motivation
 
 - Reverb, delay and a master limiter as nodes of the engine (ticket 28,
   step S10a), for a master chain of an app: delay, reverb, limiter
@@ -48,25 +54,7 @@ node scripts/check-notices.js   # the third-party notices
 UPDATE_GOLDENS=1 dart test test/aud_effects_golden_test.dart
 ```
 
-## Documentation
-
-- [The plan of ticket 28](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/tickets/2026-10-13-28-build-reverb-delay-and-a-master-limiter.md)
-  with the nodes, their defaults and the measurements
-- The decisions behind the package:
-  [dsp-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/dsp-001.md)
-  (sources with clear provenance),
-  [license-002](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/license-002.md)
-  (MIT, no LGPL),
-  [abi-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/abi-001.md)
-  (the C ABI),
-  [build-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/build-001.md)
-  (vendored C++ compiled by the hook)
-- The C API: [`src/aud_dsp_effects.h`](src/aud_dsp_effects.h)
-- The vendored code, its licenses and the audit:
-  [`src/third_party/NOTICES.md`](src/third_party/NOTICES.md)
-- The guides in [`doc/guides`](doc/guides)
-
-## Code Examples
+## Usage
 
 The master chain of an app on the engine of `aud_audio`
 (`aud_audio_ffi.dart` on native platforms): the sum of the instruments
@@ -168,7 +156,38 @@ xruns, late callbacks, the render time with and without the effects and
 the output peak, which stays at the ceiling; and the latency of the
 limiter, which an impulse rendered offline on the device confirms.
 
-## How It Works
+## Limitations
+
+- Of the effects its description names, the package ships reverbs,
+  delays, a limiter and a tremolo today; oscillators, filters, distortion
+  and further modulation are planned in `aud_audio_pm`
+- No Faust, no Soundpipe, no LGPL: a node is taken only with clear
+  provenance (dsp-001, license-002)
+- The limiter delays the signal by its look-ahead, 1.5 ms (72 frames at
+  48 kHz), and reports it as its latency
+- The tempo delay plays at most 4 s: divisions longer than that at the
+  tempo of the transport leave the beat
+- The stereo delay never decays from feedback 0.999 on
+
+## Documentation
+
+- [The plan of ticket 28](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/tickets/2026-10-13-28-build-reverb-delay-and-a-master-limiter.md)
+  with the nodes, their defaults and the measurements
+- The decisions behind the package:
+  [dsp-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/dsp-001.md)
+  (sources with clear provenance),
+  [license-002](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/license-002.md)
+  (MIT, no LGPL),
+  [abi-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/abi-001.md)
+  (the C ABI),
+  [build-001](https://github.com/audaudio/aud_audio_pm/blob/main/doc/2026-Q4/concepts/decisions/build-001.md)
+  (vendored C++ compiled by the hook)
+- The C API: [`src/aud_dsp_effects.h`](src/aud_dsp_effects.h)
+- The vendored code, its licenses and the audit:
+  [`src/third_party/NOTICES.md`](src/third_party/NOTICES.md)
+- The guides in [`doc/guides`](doc/guides)
+
+## How it works
 
 Every node renders its input in place, takes any block up to the prepared
 maximum and ramps its parameters through the engine's parameter events
@@ -231,6 +250,11 @@ and 0.6 µs for the tremolo - well below 0.1 % of the block.
   `AudEffectsBenchResult`: the mean, the p99 and the maximum in
   nanoseconds, their shares of the block and `toJson()`.
 
+## Status
+
+Before 1.0 — the API may change between minor versions. The package ships the nodes of ticket 28 (step
+S10a); the other effects of its description are planned in `aud_audio_pm`.
+
 ## Contributing
 
 Work is done ticket by ticket with the `gg` workflow; see the
@@ -238,3 +262,9 @@ Work is done ticket by ticket with the `gg` workflow; see the
 [Review Guide](doc/guides/for-ai/ai-review-guide.md). Every commit passes
 `dart analyze`, `dart format`, `dart test` with 100 % coverage of `lib/`,
 the native tests and the notices check.
+
+## License
+
+MIT — see [LICENSE](LICENSE). The vendored code under `src/third_party`
+keeps its own licenses; [`src/third_party/NOTICES.md`](src/third_party/NOTICES.md)
+names them and the audit of every node's origin.
