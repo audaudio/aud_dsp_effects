@@ -37,55 +37,55 @@ packages:
     dependency: transitive
     description:
       path: "."
-      resolved-ref: c05930b6ce3b353052a10ce38688f45526453a05
+      resolved-ref: "1ea08798bc4d188570784d342a1382631cd71ead"
       tag-pattern: "{{version}}"
       url: "git@github.com:audaudio/aud_audio.git"
     source: git
-    version: "0.5.0"
+    version: "0.5.1"
   aud_audio_core:
     dependency: "direct main"
     description:
       path: "."
-      resolved-ref: "9f07300117bb29b5dfd0847148362270004e334c"
+      resolved-ref: e5be8491576647870c49e53786d33c3ebf10dba9
       tag-pattern: "{{version}}"
       url: "git@github.com:audaudio/aud_audio_core.git"
     source: git
-    version: "0.5.4"
+    version: "0.6.1"
   aud_audio_graph:
     dependency: "direct dev"
     description:
       path: "."
-      resolved-ref: "7dc97f1a28a396b53c078efbfd92d1776de33c82"
+      resolved-ref: "4de57aef0c99778861a185b1ecbe1df2f58df9ac"
       tag-pattern: "{{version}}"
       url: "git@github.com:audaudio/aud_audio_graph.git"
     source: git
-    version: "0.5.5"
+    version: "0.6.1"
   aud_audio_io:
     dependency: transitive
     description:
       path: "."
-      resolved-ref: b76f7fabcdb84d8c6ed98d68174734c715866d3d
+      resolved-ref: be739589c356fde6209215bb32b2ac274f56f6a5
       tag-pattern: "{{version}}"
       url: "git@github.com:audaudio/aud_audio_io.git"
     source: git
-    version: "0.4.0"
+    version: "0.5.1"
   aud_audio_web:
     dependency: transitive
     description:
       path: "."
-      resolved-ref: "3cef6c5e7077dced84fd12afb4baa08bb73736ea"
+      resolved-ref: "7667fa035cfd31226e72853859f09bf52d1d356a"
       tag-pattern: "{{version}}"
       url: "git@github.com:audaudio/aud_audio_web.git"
     source: git
-    version: "0.0.10"
+    version: "0.1.0"
   aud_midi_standard:
     dependency: transitive
     description:
       name: aud_midi_standard
-      sha256: c97a486531d36b9fa9765be8145d4367d7d501af113af8faf10b9154e6af09b9
+      sha256: "92559c6e1534b892f1029a3bb6c08a07f2e96cda1d0dcca227271d3e9353306c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.1"
+    version: "0.3.0"
   boolean_selector:
     dependency: transitive
     description:
