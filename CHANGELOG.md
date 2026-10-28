@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 - 2026-10-28
+
+### Changed
+
+- Upgrade the git dependencies to their published versions
+
+- Upgrade the git dependencies to their published versions
+
 ## 0.3.0 - 2026-10-28
 
 ### Changed
