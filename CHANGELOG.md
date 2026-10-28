@@ -24,6 +24,12 @@
 
 - Lift the lock file to the newest resolvable versions
 
+- Resolve the example together with the package
+
+- Add the example to a pub workspace, resolution: workspace in the example
+- Drop the lock file of the example, the package lock covers it
+- Keep test within the test_api that flutter_test pins
+
 ## 0.2.4 - 2026-10-24
 
 ### Changed
