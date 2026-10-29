@@ -8,7 +8,7 @@
 PRODUCT_NAME = aud_dsp_effects_example
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.audanika.audDspEffects
+PRODUCT_BUNDLE_IDENTIFIER = com.example.audDspEffects
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.audanika. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.example. All rights reserved.
