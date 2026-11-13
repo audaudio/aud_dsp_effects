@@ -5,7 +5,7 @@
 // found in the LICENSE file in the root of this package.
 
 import 'package:aud_audio/aud_audio.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 // #############################################################################
 /// The control of one parameter as its node declares it: a switch for a

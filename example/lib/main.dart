@@ -6,7 +6,7 @@
 
 import 'package:aud_audio/aud_audio_ffi.dart';
 import 'package:aud_dsp_effects/aud_dsp_effects_ffi.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'effects_page.dart';
 

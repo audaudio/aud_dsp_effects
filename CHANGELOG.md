@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Require Flutter 3.50 and Dart 3.14, build the DNA
+
 ## 0.3.2 - 2026-10-29
 
 ### Added
@@ -17,6 +23,7 @@
 - Upgrade the git dependencies to their published versions
 
 - Upgrade the git dependencies to their published versions
+
 
 ## 0.3.0 - 2026-10-28
 
@@ -49,6 +56,7 @@
 - Drop the lock file of the example, the package lock covers it
 
 - Keep test within the test_api that flutter_test pins
+
 
 ## 0.2.4 - 2026-10-24
 
