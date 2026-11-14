@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.0 - 2026-11-14
 
 ### Changed
 
@@ -24,7 +24,6 @@
 - Upgrade the git dependencies to their published versions
 
 - Upgrade the git dependencies to their published versions
-
 
 ## 0.3.0 - 2026-10-28
 
@@ -57,7 +56,6 @@
 - Drop the lock file of the example, the package lock covers it
 
 - Keep test within the test_api that flutter_test pins
-
 
 ## 0.2.4 - 2026-10-24
 
