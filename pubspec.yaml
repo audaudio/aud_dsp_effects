@@ -28,6 +28,14 @@ dependencies:
   record_use: ^1.1.1
 
 dev_dependencies:
+  # The example runs the effects on the engine of aud_audio. Declared here
+  # too, so that tools that read only this manifest see the dependency of
+  # the example.
+  aud_audio:
+    git:
+      url: git@github.com:audaudio/aud_audio.git
+      tag_pattern: "{{version}}"
+    version: ^0.5.4
   aud_audio_graph:
     git:
       url: git@github.com:audaudio/aud_audio_graph.git
