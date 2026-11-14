@@ -9,4 +9,4 @@
 // coverage:ignore-file
 
 /// The version of the `aud_dsp_effects` package.
-const String audDspEffectsVersion = '0.3.2';
+const String audDspEffectsVersion = '1.0.0';

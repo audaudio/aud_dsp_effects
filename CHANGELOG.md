@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 - 2026-11-14
+
+### Changed
+
+- Require Flutter 3.50 and Dart 3.14, build the DNA
+- Declare aud_audio of the example as dev dependency
+
 ## 0.3.2 - 2026-10-29
 
 ### Added

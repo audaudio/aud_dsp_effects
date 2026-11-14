@@ -10,7 +10,7 @@ import 'dart:math';
 
 import 'package:aud_audio/aud_audio.dart';
 import 'package:aud_dsp_effects/aud_dsp_effects.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import 'effects_chain.dart';

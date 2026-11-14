@@ -41,7 +41,7 @@ import 'package:aud_dsp_effects/testing.dart';
 import 'package:aud_dsp_effects_example/effects_chain.dart';
 import 'package:aud_dsp_effects_example/effects_page.dart';
 import 'package:aud_dsp_effects_example/main.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
