@@ -36,55 +36,44 @@ packages:
   aud_audio:
     dependency: "direct dev"
     description:
-      path: "."
-      resolved-ref: "4e2eea061cf4a201746c0d2d4ceee050b41c57d7"
-      tag-pattern: "{{version}}"
-      url: "git@github.com:audaudio/aud_audio.git"
-    source: git
+      path: "../aud_audio"
+      relative: true
+    source: path
     version: "1.0.0"
   aud_audio_core:
     dependency: "direct main"
     description:
-      path: "."
-      resolved-ref: "13762d74b72a963b6686234e9f3e27cc831c439c"
-      tag-pattern: "{{version}}"
-      url: "git@github.com:audaudio/aud_audio_core.git"
-    source: git
+      path: "../aud_audio_core"
+      relative: true
+    source: path
     version: "1.0.0"
   aud_audio_graph:
     dependency: "direct dev"
     description:
-      path: "."
-      resolved-ref: "436c4582f06dea6fe7abb666da9b23c6edd2acb9"
-      tag-pattern: "{{version}}"
-      url: "git@github.com:audaudio/aud_audio_graph.git"
-    source: git
+      path: "../aud_audio_graph"
+      relative: true
+    source: path
     version: "1.0.0"
   aud_audio_io:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "."
-      resolved-ref: "06c3f5fdb497029fbbfc5fcf8e60f50267d27c38"
-      tag-pattern: "{{version}}"
-      url: "git@github.com:audaudio/aud_audio_io.git"
-    source: git
+      path: "../aud_audio_io"
+      relative: true
+    source: path
     version: "1.0.0"
   aud_audio_web:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "."
-      resolved-ref: "19a3e263873479f8474e10cfc71485ea63d71661"
-      tag-pattern: "{{version}}"
-      url: "git@github.com:audaudio/aud_audio_web.git"
-    source: git
+      path: "../aud_audio_web"
+      relative: true
+    source: path
     version: "1.0.0"
   aud_midi_standard:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: aud_midi_standard
-      sha256: "1452ebbe0748eaa073552907c9024eca676c238b599596cb226857f9f857b7a7"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../aud_midi_standard"
+      relative: true
+    source: path
     version: "1.0.0"
   boolean_selector:
     dependency: transitive
